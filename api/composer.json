@@ -7,10 +7,12 @@
     "require": {
         "php": "^7.2.5",
         "geocoder-php/google-maps-places-provider": "^1.0",
+        "geocoder-php/google-maps-provider": "^4.4",
         "geocoder-php/nominatim-provider": "^5.1",
         "laravel/lumen-framework": "^7.0",
         "nyholm/psr7": "^1.2",
-        "php-http/curl-client": "^2.1"
+        "php-http/curl-client": "^2.1",
+        "php-http/guzzle6-adapter": "^2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.9.1",

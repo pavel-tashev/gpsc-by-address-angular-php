@@ -8,7 +8,7 @@ Requirements:
 # Installation and details
 ## API
 ### Details
-For the development of the API I used Lumen - [https://lumen.laravel.com/docs/6.x](https://github.com/your/project/contributors).
+For the development of the API I used Lumen - [https://lumen.laravel.com/docs/6.x](https://lumen.laravel.com/docs/6.x).
 
 The reasons to choose Lumen are:
 * fast and reliable
@@ -25,12 +25,18 @@ The reasons to choose Geocoder are:
 * supports communication with Google Maps API and OpenStreetMap API (OMS)
 * in the future if we decide to implement other APIs that can be easily achieved (check the full list of data providers here [https://github.com/geocoder-php/Geocoder#world](https://github.com/geocoder-php/Geocoder#world))
 
+### Requirements
+You will need to make sure your server meets the following requirements:
+* PHP>=7.2
+* Installed [composer](https://getcomposer.org)
+* Installed web service - Apache or Nginx
+
 ### Installation
 I will use Ubuntu 18.04 LTS to run the API.
 
 Checkout the github repository:
 ```
-...
+git clone https://github.com/pavel-tashev/gpsc-by-address-angular-php.git project
 cd project
 ```
 
@@ -45,29 +51,129 @@ The API is located inside **api**.
 cd api
 ``` 
 
+Install all dependencies:
+```
+composer update
+```
+
+Configure your Web Service to point to the public directory of the API - **/project/api/public**.
+
+In my case I used NGINX. If you use the same, please check *nginx-config.mydomain.com* file which is inside **api** folder.
+Add this file inside Nginx folder like this:
+```
+cp /PATH-TO-YOUR-PROJECT-FOLDER/api/nginx-config.mydomain.com /etc/nginx/sites-available
+```
+
+Note: You can change the name of the config file as you wish. If you do that, take that into account for the commands below.
+
+Open the file and change the required fields in order to configure it pointing to the API folder and the corresponding domain name
+you will use to access the API.
+
+Execute the following:
+```
+cd /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/nginx-config.mydomain.com .
+nginx -t
+service nginx reload
+```
+
+Be sure that the web service has access to the folder where the api is located.
+```
+chmod -R 0755 /PATH-TO-YOUR-PROJECT-FOLDER/api/
+chown -R www-data:www-data /PATH-TO-YOUR-PROJECT-FOLDER/api/
+```
+
+One last step is to add your Google Maps API key. If you don't have one, visit the following link
+[https://developers.google.com/maps/documentation/javascript/get-api-key](https://developers.google.com/maps/documentation/javascript/get-api-key).
+Follow the instruction on the page. Also, be sure that you have enabled your API key to access Google Places API. 
+
+When ready open the following file:
+```
+api/config/app.php
+```
+
+and replace **PUT_YOUR_CODE_HERE** with your API key.
+
+Save and close.
+
+### Additional
 Make sure to place the ~/.composer/vendor/bin directory in your PATH so the lumen executable can be located by your system.
 export PATH="$PATH:$HOME/.composer/vendor/bin"
 
-Unit testing:
+### Endpoints
+The API supports the following two endpoints:
+
+```
+GET /geocode/googlemaps?address=ADDRESS
+GET /geocode/openstreetmap?address=ADDRESS
+```
+
+Replace ADDRESS with address of your choice. The output will be in the following example JSON format:
+```
+[
+    {
+        "lat": 42.6947414,
+        "lon": 23.3205482
+    }
+]
+```
+
+Open Postman to test.
+
+### Unit testing
+Go to the API directory:
+```
+cd /PATH-TO-YOUR-PROJECT-FOLDER/api/
+```
+
+The two endpoints listed above have the following unit tests:
+```
 vendor/bin/phpunit --filter=testShouldReturnAllGooglemaps
 vendor/bin/phpunit --filter=testShouldReturnAllOpenstreetmap
+```
 
-Endpoints:
-https://taskapi.peoplegogo.com/geocode/googlemaps?address=ADDRESS
-https://taskapi.peoplegogo.com/geocode/openstreetmap?address=ADDRESS
+### Cros Domain Requests
+Since you may run the API and the Angular application on different domains or ports I have configured Lumen 
+to accept CORS requests.
 
-Allow Cros Domain Requests:
-https://www.codementor.io/@chiemelachinedum/steps-to-enable-cors-on-a-lumen-api-backend-e5a0s1ecx
+You can check **api/app/Middleware/CorsMiddleware.php** and **api/bootstrap/app.php**.
+
+This is so far about the API. Now let's continue with the Angular application.
 
 
+## Angular
+### Details
+I used Angular2 for TypeScript.
 
-======== Angular ========
-Version: 2
-https://v2.angular.io/docs/ts/latest/guide/
+The application consists of one component where I display a simple form where you can enter the address and below the form
+there will be displayed two maps - Google Map and OpenStreetMap. 
 
-To run: 
+Also, I populate the input field of the form with a default address.
+
+For the two maps I used iframes because I considered it a simple approach without the need to import additional packages.
+
+*Note: For higher versions of Angular I would use [AGM](https://angular-maps.com) and [Leaflet](https://leafletjs.com).* 
+
+### Requirements
+* Node.js and npm installed [https://docs.npmjs.com/downloading-and-installing-node-js-and-npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+
+### Installation
+Open the folder below:
+```
+cd /PATH-TO-YOUR-PROJECT-FOLDER/angular/
+```
+
+Install all dependencies:
+```
+npm install
+```
+
+and run the Angular application.
+```
 npm start
+```
 
-Example address:
-bulevard Vitosha 4, Sofia, Bulgaria
-
+The terminal will inform you about the URL to access the application though your web browser. For example (in your case it might be different):
+```
+http://localhost:3000
+```

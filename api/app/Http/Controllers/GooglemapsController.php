@@ -8,8 +8,6 @@ use Geocoder\Query\ReverseQuery;
 
 class GooglemapsController extends Controller
 {
-    const API_KEY = 'AIzaSyDqi4C7sA8MqDsq0gpwsSwz8bKa6eAjjMo';
-
     /**
      * Create a new controller instance.
      *
@@ -33,7 +31,7 @@ class GooglemapsController extends Controller
         if ($address != '') {
             // Initialize and search
             $httpClient = new \Http\Adapter\Guzzle6\Client();
-            $provider = new \Geocoder\Provider\GoogleMapsPlaces\GoogleMapsPlaces($httpClient, self::API_KEY);
+            $provider = new \Geocoder\Provider\GoogleMapsPlaces\GoogleMapsPlaces($httpClient, config('app.GOOGLE_MAP_API_KEY'));
             $findResults = $provider->geocodeQuery(GeocodeQuery::create($address));
 
             // Extract data
