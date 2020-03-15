@@ -16,7 +16,7 @@ require("rxjs/add/operator/map");
 var platform_browser_1 = require("@angular/platform-browser");
 var AppComponent = /** @class */ (function () {
     function AppComponent(http, sanitizer) {
-        this.model = new app_1.App('bulevard Vitosha 4, Sofia, Bulgaria');
+        this.model = new app_1.App('bulevard Vitosha 4, Sofia, Bulgaria'); // Default address
         this.http = http;
         this.sanitizer = sanitizer;
         this.displayGpsc(this.model.address, 'googlemaps');
